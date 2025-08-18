@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beacon Academy Club Schedule</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .filter-btn:hover {
+            background: #f8f9fa;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 0;
+        }
+        
+        .day-column {
+            border-right: 1px solid #e9ecef;
+            min-height: 500px;
+        }
+        
+        .day-column:last-child {
+            border-right: none;
+        }
+        
+        .day-header {
+            background: linear-gradient(135deg, #3742fa 0%, #2f3542 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .club-list {
+            padding: 20px 15px;
+        }
+        
+        .club-item {
+            background: white;
+            border: 2px solid #f1f3f4;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .club-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .club-item.hidden {
+            display: none;
+        }
+        
+        .club-name {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .club-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .club-room {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .club-moderator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-style: italic;
+        }
+        
+        .club-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        
+        .category-academic {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .category-creative {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .category-media {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .category-service {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .category-cultural {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .category-sports {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .category-culinary {
+            background: #fff8e1;
+            color: #f57c00;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .modal-details {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .modal-details strong {
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .day-column {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Beacon Academy Club Schedule</h1>
+            <p>Discover clubs and connect with your interests</p>
+        </div>
+        
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search clubs, rooms, or moderators...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">All Clubs</button>
+                <button class="filter-btn" data-category="academic">Academic</button>
+                <button class="filter-btn" data-category="creative">Creative</button>
+                <button class="filter-btn" data-category="media">Media</button>
+                <button class="filter-btn" data-category="cultural">Cultural</button>
+                <button class="filter-btn" data-category="service">Service</button>
+                <button class="filter-btn" data-category="culinary">Culinary</button>
+                <button class="filter-btn" data-category="sports">Sports</button>
+            </div>
+        </div>
+        
+        <div class="calendar-grid">
+            <div class="day-column">
+                <div class="day-header">Monday</div>
+                <div class="club-list" data-day="monday">
+                    <div class="club-item" data-category="culinary" data-search="kitchen kind monday bio lab nina evangelista ms hannah f culinary cooking">
+                        <div class="club-name">Kitchen Kind</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Bio Lab</div>
+                            <div class="club-moderator">👤 Ms. Hannah F.</div>
+                        </div>
+                        <span class="club-category category-culinary">Culinary</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="media" data-search="griffin post monday a209 fernando marques ms grace g journalism newspaper">
+                        <div class="club-name">Griffin Post</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A209</div>
+                            <div class="club-moderator">👤 Ms. Grace G.</div>
+                        </div>
+                        <span class="club-category category-media">Media</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="sports" data-search="hema club monday fitness room jibrial yulo coach andrew m martial arts fencing">
+                        <div class="club-name">HEMA Club</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Fitness Room</div>
+                            <div class="club-moderator">👤 Coach Andrew M.</div>
+                        </div>
+                        <span class="club-category category-sports">Sports</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="culinary" data-search="grub club monday a210 luccia torres ms tinggay s food cooking">
+                        <div class="club-name">The Grub Club</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A210</div>
+                            <div class="club-moderator">👤 Ms. Tinggay S.</div>
+                        </div>
+                        <span class="club-category category-culinary">Culinary</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="academic" data-search="ba model united nations monday a104 nina evangelista ms pau daluz mun diplomacy">
+                        <div class="club-name">BA Model United Nations</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A104</div>
+                            <div class="club-moderator">👤 Ms. Pau Daluz</div>
+                        </div>
+                        <span class="club-category category-academic">Academic</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="creative" data-search="musical theatre monday a105 kate wong mr paolo o ms merly b theater drama">
+                        <div class="club-name">Musical Theatre</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A105</div>
+                            <div class="club-moderator">👤 Mr. Paolo O., Ms. Merly B.</div>
+                        </div>
+                        <span class="club-category category-creative">Creative</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="day-column">
+                <div class="day-header">Tuesday</div>
+                <div class="club-list" data-day="tuesday">
+
+                    <div class="club-item" data-category="service" data-search="cosa tuesday a105 nicolo feliciano angela beamish ms riza e ms ana d community service">
+                        <div class="club-name">COSA</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A105</div>
+                            <div class="club-moderator">👤 Ms. Riza E., Ms. Ana D.</div>
+                        </div>
+                        <span class="club-category category-service">Service</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="cultural" data-search="interkultura tuesday a104 nadia ripoll ms felice g culture international">
+                        <div class="club-name">Interkultura</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A104</div>
+                            <div class="club-moderator">👤 Ms. Felice G.</div>
+                        </div>
+                        <span class="club-category category-cultural">Cultural</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="creative" data-search="larawan tuesday a202 lucas ramos sir alfred c ms shayne b photography art">
+                        <div class="club-name">Larawan</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A202</div>
+                            <div class="club-moderator">👤 Sir Alfred C., Ms. Shayne B.</div>
+                        </div>
+                        <span class="club-category category-creative">Creative</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="media" data-search="yearbook tuesday a103 summer feliciano ms joanna h ms ming r photography memories">
+                        <div class="club-name">Yearbook</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A103</div>
+                            <div class="club-moderator">👤 Ms. Joanna H., Ms. Ming R.</div>
+                        </div>
+                        <span class="club-category category-media">Media</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="day-column">
+                <div class="day-header">Wednesday</div>
+                <div class="club-list" data-day="wednesday">
+                    <div class="club-item" data-category="creative" data-search="the web creative writing club wednesday a105 kate wong ms cel c writing literature">
+                        <div class="club-name">The Web (Creative Writing Club)</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A105</div>
+                            <div class="club-moderator">👤 Ms. Cel C.</div>
+                        </div>
+                        <span class="club-category category-creative">Creative</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="media" data-search="sports media wednesday a209 lorenzo hawak mr delo v mr josh b journalism sports">
+                        <div class="club-name">Sports Media</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A209</div>
+                            <div class="club-moderator">👤 Mr. Delo V., Mr. Josh B.</div>
+                        </div>
+                        <span class="club-category category-media">Media</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="creative" data-search="film club wednesday a103 lia cuenca rocco pineda mr louie d movies cinema">
+                        <div class="club-name">Film Club</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A103</div>
+                            <div class="club-moderator">👤 Mr. Louie D.</div>
+                        </div>
+                        <span class="club-category category-creative">Creative</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="service" data-search="environmentalists wednesday a210 bianca arriola mr jerson l environment eco green">
+                        <div class="club-name">Environmentalists</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A210</div>
+                            <div class="club-moderator">👤 Mr. Jerson L.</div>
+                        </div>
+                        <span class="club-category category-service">Service</span>
+                    </div>
+                    
+                    <div class="club-item" data-category="creative" data-search="board game club wednesday a104 summer feliciano sir cos games strategy">
+                        <div class="club-name">Board Game Club</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A104</div>
+                            <div class="club-moderator">👤 Sir Cos</div>
+                        </div>
+                        <span class="club-category category-creative">Creative</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="day-column">
+                <div class="day-header">Thursday</div>
+                <div class="club-list" data-day="thursday">
+                    <div class="club-item" data-category="academic" data-search="ba model united nations thursday a104 nina evangelista ms pau daluz mun diplomacy">
+                        <div class="club-name">BA Model United Nations</div>
+                        <div class="club-details">
+                            <div class="club-room">📍 Room A104</div>
+                            <div class="club-moderator">👤 Ms. Pau Daluz</div>
+                        </div>
+                        <span class="club-category category-academic">Academic</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="clubModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalDetails" class="modal-details"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Club contact information
+        const clubContacts = {
+            'Kitchen Kind': 'nina.evangelista@beaconacademy.ph',
+            'Griffin Post': 'fernando.marques@beaconacademy.ph',
+            'HEMA Club': 'jibrial.yulo@beaconacademy.ph',
+            'The Grub Club': 'luccia.torres@beaconacademy.ph',
+            'BA Model United Nations': 'nina.evangelista@beaconacademy.ph',
+            'Musical Theatre': 'kate.wong@beaconacademy.ph',
+            'COSA': 'nicolo.feliciano@beaconacademy.ph, angela.beamish@beaconacademy.ph',
+            'Interkultura': 'nadia.ripoll@beaconacademy.ph',
+            'Larawan': 'lucas.ramos@beaconacademy.ph',
+            'Yearbook': 'summer.feliciano@beaconacademy.ph',
+            'The Web (Creative Writing Club)': 'kate.wong@beaconacademy.ph',
+            'Sports Media': 'lorenzo.hawak@beaconacademy.ph',
+            'Film Club': 'lia.cuenca@beaconacademy.ph, rocco.pineda@beaconacademy.ph',
+            'Environmentalists': 'bianca.arriola@beaconacademy.ph',
+            'Board Game Club': 'summer.feliciano@beaconacademy.ph'
+        };
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clubItems = document.querySelectorAll('.club-item');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const modal = document.getElementById('clubModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDetails = document.getElementById('modalDetails');
+        const closeModal = document.querySelector('.close');
+        
+        // Search function
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            clubItems.forEach(item => {
+                const searchData = item.getAttribute('data-search');
+                if (searchData.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Filter function
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filter clubs
+                clubItems.forEach(item => {
+                    if (category === 'all' || item.getAttribute('data-category') === category) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                // Clear search when filtering
+                searchInput.value = '';
+            });
+        });
+        
+        // Modal functionality
+        clubItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const clubName = this.querySelector('.club-name').textContent;
+                const room = this.querySelector('.club-room').textContent.replace('📍 ', '');
+                const moderator = this.querySelector('.club-moderator').textContent.replace('👤 ', '');
+                const category = this.querySelector('.club-category').textContent;
+                const contact = clubContacts[clubName] || 'Contact information not available';
+                
+                modalTitle.textContent = clubName;
+                modalDetails.innerHTML = `
+                    <p><strong>Location:</strong> ${room}</p>
+                    <p><strong>Moderator:</strong> ${moderator}</p>
+                    <p><strong>Category:</strong> ${category}</p>
+                    <p><strong>Contact:</strong> ${contact}</p>
+                    <br>
+                    <p><em>Click outside or press the × to close this window.</em></p>
+                `;
+                
+                modal.style.display = 'block';
+            });
+        });
+        
+        // Close modal
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Keyboard accessibility
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
