@@ -125,7 +125,6 @@
         }
         
         .day-header {
-            background: linear-gradient(135deg, #3742fa 0%, #2f3542 100%);
             color: white;
             padding: 20px;
             text-align: center;
@@ -133,6 +132,23 @@
             font-size: 1.1em;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+        
+        /* Individual day colors */
+        .day-column:nth-child(1) .day-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .day-column:nth-child(2) .day-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .day-column:nth-child(3) .day-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .day-column:nth-child(4) .day-header {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
         }
         
         .club-list {
@@ -284,6 +300,18 @@
             color: #2c3e50;
         }
         
+        .club-description {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-size: 1.05em;
+            line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
         @media (max-width: 768px) {
             .calendar-grid {
                 grid-template-columns: 1fr;
@@ -355,8 +383,8 @@
                         <span class="club-category category-media">Media</span>
                     </div>
                     
-                    <div class="club-item" data-category="sports" data-search="hema club monday fitness room jibrial yulo coach andrew m martial arts fencing">
-                        <div class="club-name">HEMA Club</div>
+                    <div class="club-item" data-category="sports" data-search="martial arts club monday fitness room jibrial yulo coach andrew m martial arts fencing muay thai arnis jiu-jitsu self-defense">
+                        <div class="club-name">Martial Arts Club</div>
                         <div class="club-details">
                             <div class="club-room">📍 Fitness Room</div>
                             <div class="club-moderator">👤 Coach Andrew M.</div>
@@ -438,8 +466,8 @@
             <div class="day-column">
                 <div class="day-header">Wednesday</div>
                 <div class="club-list" data-day="wednesday">
-                    <div class="club-item" data-category="creative" data-search="the web creative writing club wednesday a105 kate wong ms cel c writing literature">
-                        <div class="club-name">The Web (Creative Writing Club)</div>
+                    <div class="club-item" data-category="creative" data-search="aurum creative writing club wednesday a105 kate wong ms cel c writing literature">
+                        <div class="club-name">Aurum Creative Writing Club</div>
                         <div class="club-details">
                             <div class="club-room">📍 Room A105</div>
                             <div class="club-moderator">👤 Ms. Cel C.</div>
@@ -514,7 +542,7 @@
         const clubContacts = {
             'Kitchen Kind': 'nina.evangelista@beaconacademy.ph',
             'Griffin Post': 'fernando.marques@beaconacademy.ph',
-            'HEMA Club': 'jibrial.yulo@beaconacademy.ph',
+            'Martial Arts Club': 'jibrial.yulo@beaconacademy.ph',
             'The Grub Club': 'luccia.torres@beaconacademy.ph',
             'BA Model United Nations': 'nina.evangelista@beaconacademy.ph',
             'Musical Theatre': 'kate.wong@beaconacademy.ph',
@@ -522,11 +550,24 @@
             'Interkultura': 'nadia.ripoll@beaconacademy.ph',
             'Larawan': 'lucas.ramos@beaconacademy.ph',
             'Yearbook': 'summer.feliciano@beaconacademy.ph',
-            'The Web (Creative Writing Club)': 'kate.wong@beaconacademy.ph',
+            'Aurum Creative Writing Club': 'kate.wong@beaconacademy.ph',
             'Sports Media': 'lorenzo.hawak@beaconacademy.ph',
             'Film Club': 'lia.cuenca@beaconacademy.ph, rocco.pineda@beaconacademy.ph',
             'Environmentalists': 'bianca.arriola@beaconacademy.ph',
             'Board Game Club': 'summer.feliciano@beaconacademy.ph'
+        };
+        
+        // Club descriptions
+        const clubDescriptions = {
+            'Griffin Post': 'Griffin Post is a club dedicated to showcasing the creativity of the Beacon Academy community and reporting on events that happen around the school.',
+            'Martial Arts Club': 'In the Martial Arts Club. We will learn the basics of various martial arts, such as Muay Thai, Arnis, HEMA, and Jiu-Jitsu. This club will create a learning environment for students interested in martial arts and teach them self-defense.',
+            'Musical Theatre': 'Admitting singers, dancers, and actors aiming for a full production by the end of the year. Featuring games, choreo, auditions, rehearsals, and props.',
+            'Larawan': 'Do you like to Chill? Do Creative Activities? Learn New Things? Make New Friends? JOIN LARAWAN!!!',
+            'Environmentalists': 'Spread awareness on the importance of considering the natural world, promote sustainable actions, and preserve the planet\'s well-being.',
+            'BA Model United Nations': 'At Beacon Academy MUN, our goal is to provide students with the opportunity to develop into confident, thoughtful, and open-minded leaders. We aim to create a space where students can explore global issues, practice teamwork and public speaking, and learn the value of respectful debate and collaboration. We envision a thriving MUN community where students mentor each other, grow into confident delegates, and proudly represent Beacon Academy at local and national conferences, earning recognition while fostering diplomacy and global awareness.',
+            'Aurum Creative Writing Club': 'Aurum is a space for writers to connect and explore different types and styles of writing. They can develop their skills, begin projects, and gain confidence through sharing and exchanging feedback.',
+            'Interkultura': 'A cultural exchange club! We will learn about 2-3 cultures per year, ending with a trip in order to further learn about it. We will raise funds for this trip by setting up different fundraisers.',
+            'Yearbook': 'Goal: Have the yearbook by the end of the school year and represent this school year! We\'re looking for people interested in: Graphic Design, Photography, and Creative Directing.'
         };
         
         // Search functionality
@@ -582,9 +623,11 @@
                 const moderator = this.querySelector('.club-moderator').textContent.replace('👤 ', '');
                 const category = this.querySelector('.club-category').textContent;
                 const contact = clubContacts[clubName] || 'Contact information not available';
+                const description = clubDescriptions[clubName] || '';
                 
                 modalTitle.textContent = clubName;
                 modalDetails.innerHTML = `
+                    ${description ? `<div class="club-description">${description}</div>` : ''}
                     <p><strong>Location:</strong> ${room}</p>
                     <p><strong>Moderator:</strong> ${moderator}</p>
                     <p><strong>Category:</strong> ${category}</p>
