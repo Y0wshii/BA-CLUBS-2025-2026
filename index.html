@@ -484,8 +484,8 @@
                         <span class="club-category category-media">Media</span>
                     </div>
                     
-                    <div class="club-item" data-category="creative" data-search="film club wednesday a103 lia cuenca rocco pineda mr louie d movies cinema">
-                        <div class="club-name">Film Club</div>
+                    <div class="club-item" data-category="creative" data-search="film fanatics wednesday a103 lia cuenca rocco pineda mr louie d movies cinema">
+                        <div class="club-name">Film Fanatics</div>
                         <div class="club-details">
                             <div class="club-room">📍 Room A103</div>
                             <div class="club-moderator">👤 Mr. Louie D.</div>
@@ -552,7 +552,7 @@
             'Yearbook': 'summer.feliciano@beaconacademy.ph',
             'Aurum Creative Writing Club': 'kate.wong@beaconacademy.ph',
             'Sports Media': 'lorenzo.hawak@beaconacademy.ph',
-            'Film Club': 'lia.cuenca@beaconacademy.ph, rocco.pineda@beaconacademy.ph',
+            'Film Fanatics': 'lia.cuenca@beaconacademy.ph, rocco.pineda@beaconacademy.ph',
             'Environmentalists': 'bianca.arriola@beaconacademy.ph',
             'Board Game Club': 'summer.feliciano@beaconacademy.ph'
         };
@@ -566,6 +566,7 @@
             'Environmentalists': 'Spread awareness on the importance of considering the natural world, promote sustainable actions, and preserve the planet\'s well-being.',
             'BA Model United Nations': 'At Beacon Academy MUN, our goal is to provide students with the opportunity to develop into confident, thoughtful, and open-minded leaders. We aim to create a space where students can explore global issues, practice teamwork and public speaking, and learn the value of respectful debate and collaboration. We envision a thriving MUN community where students mentor each other, grow into confident delegates, and proudly represent Beacon Academy at local and national conferences, earning recognition while fostering diplomacy and global awareness.',
             'Aurum Creative Writing Club': 'Aurum is a space for writers to connect and explore different types and styles of writing. They can develop their skills, begin projects, and gain confidence through sharing and exchanging feedback.',
+            'Film Fanatics': 'Explore and dive deeper into the world of cinema giving a place for those who appreciate film. Share our knowledge about film with each other. Opportunity for others to also learn and become more familiar.',
             'Interkultura': 'A cultural exchange club! We will learn about 2-3 cultures per year, ending with a trip in order to further learn about it. We will raise funds for this trip by setting up different fundraisers.',
             'Yearbook': 'Goal: Have the yearbook by the end of the school year and represent this school year! We\'re looking for people interested in: Graphic Design, Photography, and Creative Directing.'
         };
@@ -627,7 +628,7 @@
                 
                 modalTitle.textContent = clubName;
                 modalDetails.innerHTML = `
-                    ${description ? `<div class="club-description">${description}</div>` : ''}
+                    <div class="club-description">${description || 'No description available'}</div>
                     <p><strong>Location:</strong> ${room}</p>
                     <p><strong>Moderator:</strong> ${moderator}</p>
                     <p><strong>Category:</strong> ${category}</p>
